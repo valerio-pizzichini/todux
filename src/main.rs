@@ -1,8 +1,9 @@
 pub mod database;
 pub mod command;
 pub mod utils;
+pub mod todo;
 
-use database::Todo;
+use todo::{TodoData, Todo};
 use structopt::StructOpt;
 use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
@@ -11,14 +12,9 @@ use std::error::Error;
 use tui::Terminal;
 use tui::backend::TermionBackend;
 use tui::widgets::{Block, Borders, List, ListItem};
-use tui::layout::{Constraint,Direction, Layout};
 use termion::{event::Key, raw::IntoRawMode, input::TermRead};
 
-use utils::{
-    StatefulList
-};
-
-use crate::database::read;
+use utils::{StatefulList};
 
 /// Search for a pattern in a file and display the lines that contain it.
 #[derive(StructOpt)]
@@ -28,18 +24,28 @@ struct Cli {
 }
 
 struct TodoList {
-    items: StatefulList<String>
+    items: StatefulList<Todo>
 }
 
 impl<'a> TodoList {
-    fn new(todo: Todo) -> TodoList {
+    fn new(data: TodoData) -> TodoList {
         TodoList {
-            items: StatefulList::with_items(todo.todos)
+            items: StatefulList::with_items(data.todos)
         }
     }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+
+    let args: Cli = StructOpt::from_args();
+
+    match args.command.as_str() {
+        "add" => {
+            command::add(args.option.unwrap());
+            return Ok(());
+        },
+        _ => println!("Continuing to list")
+    }
 
     let stdout = io::stdout().into_raw_mode().expect("asd");
     let backend = TermionBackend::new(stdout);
@@ -49,6 +55,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let db = database::read();
     let mut todo_list = TodoList::new(db);
 
+    terminal.clear().expect("Error clearing terminal");
     loop {
         terminal.draw(|f| {
             // Iterate through all elements in the `items` app and append some debug text to it.
@@ -57,7 +64,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .items
                 .iter()
                 .map(|i| {
-                    ListItem::new(Span::from(String::from(i))).style(Style::default().fg(Color::Black).bg(Color::White))
+                    let content = Span::from(String::from(i.title.as_str()));
+                    let checkbox = match i.done {
+                        true => Span::from("[x] "),
+                        false => Span::from("[ ] ")
+                    };
+                    let spans = Spans::from(vec![checkbox, content]);
+                    ListItem::new(spans).style(Style::default().fg(Color::Black).bg(Color::White))
                 })
                 .collect();
 
@@ -85,6 +98,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 Key::Down => {
                     todo_list.items.next()
+                },
+                Key::Backspace => {
+                    &todo_list.items.items[todo_list.items.state.selected().unwrap()].toggle();
                 }
                 _ => (),
             }

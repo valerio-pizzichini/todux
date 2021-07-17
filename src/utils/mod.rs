@@ -1,5 +1,7 @@
 use tui::widgets::ListState;
 
+use crate::todo::Todo;
+
 pub struct StatefulList<T> {
     pub state: ListState,
     pub items: Vec<T>,
