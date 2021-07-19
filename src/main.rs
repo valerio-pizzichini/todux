@@ -54,6 +54,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let db = database::read();
     let mut todo_list = TodoList::new(db);
+    todo_list.items.state.select(Some(0));
 
     terminal.clear().expect("Error clearing terminal");
     loop {
@@ -99,7 +100,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 Key::Down => {
                     todo_list.items.next()
                 },
-                Key::Backspace => {
+                Key::Char('t') => {
                     &todo_list.items.items[todo_list.items.state.selected().unwrap()].toggle();
                 }
                 _ => (),

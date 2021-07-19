@@ -7,7 +7,7 @@ pub fn add(description: String) {
         title: description,
         done: false
     });
-    database::save(db);
+    database::save(&db);
 }
 
 pub fn list() {
