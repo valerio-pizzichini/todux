@@ -92,6 +92,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             match k.unwrap() {
                 Key::Char('q') => {
                     terminal.clear()?;
+                    database::save(&TodoData {
+                        todos: todo_list.items.items
+                    });
                     return Ok(());
                 },
                 Key::Up => {
