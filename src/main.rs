@@ -92,6 +92,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             match k.unwrap() {
                 Key::Char('q') => {
                     terminal.clear()?;
+                    // Save current todo list before exit
                     database::save(&TodoData {
                         todos: todo_list.items.items
                     });
@@ -105,6 +106,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 Key::Char('t') => {
                     &todo_list.items.items[todo_list.items.state.selected().unwrap()].toggle();
+                },
+                Key::Char('d') => {
+                    todo_list.items.remove()
                 }
                 _ => (),
             }

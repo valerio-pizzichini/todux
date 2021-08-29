@@ -1,7 +1,5 @@
 use tui::widgets::ListState;
 
-use crate::todo::Todo;
-
 pub struct StatefulList<T> {
     pub state: ListState,
     pub items: Vec<T>,
@@ -52,5 +50,19 @@ impl<T> StatefulList<T> {
 
     pub fn unselect(&mut self) {
         self.state.select(None);
+    }
+
+    pub fn remove(&mut self) {
+        let i = match self.state.selected() {
+            Some(i) => {
+                if i >= self.items.len() - 1 {
+                    0
+                } else {
+                    i
+                }
+            }
+            None => 0,
+        };
+        self.items.remove(i);
     }
 }
