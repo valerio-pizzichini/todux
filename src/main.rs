@@ -2,6 +2,7 @@ pub mod database;
 pub mod command;
 pub mod utils;
 pub mod todo;
+pub mod workspace;
 
 use todo::{TodoData, Todo};
 use structopt::StructOpt;
@@ -17,10 +18,21 @@ use termion::{event::Key, raw::IntoRawMode, input::TermRead};
 use utils::{StatefulList};
 
 /// Search for a pattern in a file and display the lines that contain it.
-#[derive(StructOpt)]
-struct Cli {
-    command: String,
-    option: Option<String>
+#[derive(StructOpt, Debug)]
+enum Cli {
+    Add {
+        todo_name: String
+    },
+    List, 
+    Workspace(WorkspaceCommand)
+}
+
+#[derive(StructOpt, Debug)]
+enum WorkspaceCommand {
+    Set {
+        workspace_name: String
+    },
+    Unset
 }
 
 struct TodoList {
@@ -35,15 +47,39 @@ impl<'a> TodoList {
     }
 }
 
+fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
+    let mut db_filename = String::from("db.").to_owned();
+    db_filename.push_str(&workspace_name);
+    db_filename.push_str(".json");
+
+    db_filename
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
 
-    let args: Cli = StructOpt::from_args();
+    let mut db_filename = match workspace::get_workspace() {
+        Ok(workspace_name) => get_db_filename_from_workspace_name(workspace_name),
+        _ => String::from("db.json")
+    };
 
-    match args.command.as_str() {
-        "add" => {
-            command::add(args.option.unwrap());
-            return Ok(());
+
+    match StructOpt::from_args() {
+        Cli::Workspace(ws_command) => {
+            match ws_command {
+                WorkspaceCommand::Set { workspace_name} => {
+                    workspace::set_workspace(&workspace_name);
+                    db_filename = get_db_filename_from_workspace_name(workspace_name);
+                },
+                WorkspaceCommand::Unset => {
+                    workspace::unset_workspace();
+                    db_filename = String::from("db.json");
+                }
+            }
         },
+        Cli::Add {todo_name} => {
+            command::add(todo_name, &db_filename);
+            return Ok(());
+        }
         _ => println!("Continuing to list")
     }
 
@@ -52,7 +88,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend).expect("asd");
     let mut asi = termion::async_stdin();
 
-    let db = database::read();
+    let db = database::read(&db_filename);
     let mut todo_list = TodoList::new(db);
     todo_list.items.state.select(Some(0));
 
@@ -95,7 +131,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     // Save current todo list before exit
                     database::save(&TodoData {
                         todos: todo_list.items.items
-                    });
+                    }, &db_filename);
                     return Ok(());
                 },
                 Key::Up => {

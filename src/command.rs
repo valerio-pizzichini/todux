@@ -1,17 +1,17 @@
 use crate::database;
 use crate::todo::Todo;
 
-pub fn add(description: String) {
-    let mut db = database::read();
+pub fn add(description: String, db_filename: &str) {
+    let mut db = database::read(db_filename);
     db.todos.push( Todo {
         title: description,
         done: false
     });
-    database::save(&db);
+    database::save(&db, db_filename);
 }
 
-pub fn list() {
-    let db = database::read();
+pub fn list(db_filename: &str) {
+    let db = database::read(db_filename);
     if db.todos.len() == 0 {
         println!("The todo list is empty, please add one")
     }
