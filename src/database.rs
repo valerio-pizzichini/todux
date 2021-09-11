@@ -28,3 +28,11 @@ pub fn save(todo: &TodoData, db_filename: &str) {
 
     fs::write(db_filename, db_content).expect("Error while saving database")
 }
+
+pub fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
+    let mut db_filename = String::from("db.").to_owned();
+    db_filename.push_str(&workspace_name);
+    db_filename.push_str(".json");
+
+    db_filename
+}
