@@ -3,8 +3,11 @@ pub mod command;
 pub mod utils;
 pub mod todo;
 pub mod workspace;
+mod ui {
+    pub mod todolist;
+}
 
-use todo::{TodoData, Todo};
+use todo::{TodoData};
 use structopt::StructOpt;
 use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
@@ -14,8 +17,7 @@ use tui::Terminal;
 use tui::backend::TermionBackend;
 use tui::widgets::{Block, Borders, List, ListItem};
 use termion::{event::Key, raw::IntoRawMode, input::TermRead};
-
-use utils::{StatefulList};
+use ui::todolist::TodoList;
 
 /// Search for a pattern in a file and display the lines that contain it.
 #[derive(StructOpt, Debug)]
@@ -32,33 +34,17 @@ enum WorkspaceCommand {
     Set {
         workspace_name: String
     },
-    Unset
-}
-
-struct TodoList {
-    items: StatefulList<Todo>
-}
-
-impl<'a> TodoList {
-    fn new(data: TodoData) -> TodoList {
-        TodoList {
-            items: StatefulList::with_items(data.todos)
-        }
+    Unset,
+    List,
+    Remove {
+        workspace_name: String
     }
-}
-
-fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
-    let mut db_filename = String::from("db.").to_owned();
-    db_filename.push_str(&workspace_name);
-    db_filename.push_str(".json");
-
-    db_filename
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
 
     let mut db_filename = match workspace::get_workspace() {
-        Ok(workspace_name) => get_db_filename_from_workspace_name(workspace_name),
+        Ok(workspace_name) => database::get_db_filename_from_workspace_name(workspace_name),
         _ => String::from("db.json")
     };
 
@@ -68,11 +54,23 @@ fn main() -> Result<(), Box<dyn Error>> {
             match ws_command {
                 WorkspaceCommand::Set { workspace_name} => {
                     workspace::set_workspace(&workspace_name);
-                    db_filename = get_db_filename_from_workspace_name(workspace_name);
+                    database::get_db_filename_from_workspace_name(workspace_name);
                 },
                 WorkspaceCommand::Unset => {
                     workspace::unset_workspace();
                     db_filename = String::from("db.json");
+                },
+                WorkspaceCommand::List => {
+                    let entries = workspace::list_workspaces().expect("Error listing workspaces");
+                    entries
+                        .into_iter()
+                        .for_each(|e| {
+                            println!("{}", e);
+                        });
+                    return Ok(());
+                },
+                WorkspaceCommand::Remove { workspace_name } => {
+                    workspace::remove_workspace(&workspace_name);
                 }
             }
         },
