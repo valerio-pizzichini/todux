@@ -1,20 +1,17 @@
 use crate::todo::TodoData;
 use std::fs::{self, File};
+use crate::sys;
 
 pub fn read(db_filename: &str) -> TodoData {
-    let db_file = File::open(db_filename);
-    if let Ok(db_file) = db_file {
-        let db: TodoData = serde_json::from_reader(db_file)
-            .expect("Invalid json");
-        db
-    } else {
-        create(db_filename)
+    match File::open(db_filename) {
+        Ok(db_file) => serde_json::from_reader(db_file).expect("Invalid json"),
+        Err(_) => create(db_filename)
     }
 }
 
 fn create(db_filename: &str) -> TodoData {
     File::create(db_filename).expect("Error while creating db file");
-    let db =TodoData {
+    let db = TodoData {
         todos: vec![]
     };
     save(&db, db_filename);
@@ -30,9 +27,9 @@ pub fn save(todo: &TodoData, db_filename: &str) {
 }
 
 pub fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
-    let mut db_filename = String::from("db.").to_owned();
-    db_filename.push_str(&workspace_name);
-    db_filename.push_str(".json");
+    let db_file_name = format!("db.{}.json", workspace_name);
+    let db_filepath = sys::get_project_file_path(&db_file_name);
+    println!("db path: {}", db_filepath);
 
-    db_filename
+    db_filepath
 }

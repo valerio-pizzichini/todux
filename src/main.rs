@@ -4,6 +4,7 @@ pub mod utils;
 pub mod todo;
 pub mod workspace;
 pub mod cli;
+pub mod sys;
 mod ui {
     pub mod todolist;
     pub mod view_list;
@@ -17,9 +18,11 @@ use cli::{ Cli, WorkspaceCommand };
 
 fn main() -> Result<(), Box<dyn Error>> {
 
+    sys::initialize();
+
     let mut db_filename = match workspace::get_workspace() {
         Ok(workspace_name) => database::get_db_filename_from_workspace_name(workspace_name),
-        _ => String::from("db.json")
+        _ => database::get_db_filename_from_workspace_name(String::from(""))
     };
 
     match StructOpt::from_args() {
@@ -27,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             match ws_command {
                 WorkspaceCommand::Set { workspace_name} => {
                     workspace::set_workspace(&workspace_name);
-                    database::get_db_filename_from_workspace_name(workspace_name);
+                    db_filename = database::get_db_filename_from_workspace_name(workspace_name);
                 },
                 WorkspaceCommand::Unset => {
                     workspace::unset_workspace();
