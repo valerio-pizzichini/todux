@@ -1,12 +1,14 @@
-use std::{fs::{self, File}, io, io::BufReader};
 use crate::database;
+use crate::sys;
 
+use std::{fs::{self, File}, io, io::BufReader};
 use termion::input::TermRead;
 
 const WORKSPACE_FILENAME: &str = ".workspace";
 
 pub fn get_workspace() -> io::Result<String> {
-    let workspace_file = match File::open(WORKSPACE_FILENAME) {
+    let workspace_file_path = sys::get_project_file_path(WORKSPACE_FILENAME);
+    let workspace_file = match File::open(workspace_file_path) {
         Ok(workspace_file) => workspace_file,
         Err(_) => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unable to open workspace file"))
     };
@@ -30,12 +32,12 @@ pub fn set_workspace(workspace_name: &str) {
         return;
     }
 
-    fs::write(WORKSPACE_FILENAME, workspace_name)
+    fs::write(sys::get_project_file_path(WORKSPACE_FILENAME), workspace_name)
         .expect("Unable to write workspace name into workspace file");
 }
 
 pub fn unset_workspace() {
-    fs::remove_file(WORKSPACE_FILENAME);
+    fs::remove_file(sys::get_project_file_path(WORKSPACE_FILENAME));
 }
 
 pub fn list_workspaces() -> io::Result<Vec<String>> {

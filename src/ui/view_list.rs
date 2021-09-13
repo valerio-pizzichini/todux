@@ -20,11 +20,15 @@ pub fn show_list(
 
     let stdout = io::stdout()
         .into_raw_mode()
-        .expect("asd");
+        .expect("Unable to listen input on stdout");
     let backend = TermionBackend::new(stdout);
-    let mut terminal = Terminal::new(backend).expect("asd");
+    let mut terminal = Terminal::new(backend).expect("Unable to select terminal");
     let mut asi = termion::async_stdin();
-    terminal.clear().expect("Error clearing terminal");
+
+    // Clear current terminal before drawing the app to avoid conflicts
+    terminal
+        .clear()
+        .expect("Error clearing terminal");
 
     loop {
         terminal.draw(|f| {

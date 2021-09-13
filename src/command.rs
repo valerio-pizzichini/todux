@@ -4,10 +4,12 @@ use crate::todo::Todo;
 pub fn add(description: String, db_filename: &str) {
     let mut db = database::read(db_filename);
     db.todos.push( Todo {
-        title: description,
+        title: description.clone(),
         done: false
     });
     database::save(&db, db_filename);
+
+    println!("\"{}\" added successfully [v]", description);
 }
 
 pub fn list(db_filename: &str) {
