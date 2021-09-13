@@ -41,7 +41,7 @@ pub fn unset_workspace() {
 }
 
 pub fn list_workspaces() -> io::Result<Vec<String>> {
-    let read_dir_result = match fs::read_dir(".") {
+    let read_dir_result = match fs::read_dir(sys::get_home_project_dir()) {
         Ok(result) => result,
         Err(_) => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unable to read current directory to list workspaces"))
     };
