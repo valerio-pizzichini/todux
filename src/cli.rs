@@ -12,11 +12,11 @@ pub enum Cli {
 #[derive(StructOpt, Debug)]
 pub enum WorkspaceCommand {
     Set {
-        workspace_name: String
+        name: String
     },
     Unset,
     List,
     Remove {
-        workspace_name: String
+        name: String
     }
 }

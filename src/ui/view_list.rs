@@ -3,8 +3,9 @@ use crate::ui;
 use crate::database;
 
 use termion::{event::Key, raw::IntoRawMode, input::TermRead};
-use tui::widgets::{Block, Borders, List, ListItem};
+use tui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use tui::style::{Color, Modifier, Style};
+use tui::layout::{Layout, Constraint, Direction};
 use tui::text::{Span, Spans};
 use std::io::{self, Read};
 use todo::{TodoData};
@@ -15,7 +16,8 @@ use ui::todolist::TodoList;
 
 pub fn show_list(
     mut todo_list: TodoList,
-    db_filename: String
+    db_filename: String,
+    workspace_name: String
 ) -> Result<(), Box<dyn Error>> {
 
     let stdout = io::stdout()
@@ -32,6 +34,18 @@ pub fn show_list(
 
     loop {
         terminal.draw(|f| {
+            let chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .margin(0)
+                .constraints(
+                    [
+                        Constraint::Percentage(98),
+                        Constraint::Max(1)
+                    ]
+                    .as_ref(),
+                )
+                .split(f.size());
+
             // Iterate through all elements in the `items` app and append some debug text to it.
             let items: Vec<ListItem> = todo_list
                 .items
@@ -57,8 +71,27 @@ pub fn show_list(
                         .add_modifier(Modifier::BOLD),
                 )
                 .highlight_symbol(">> ");
+            
+            f.render_stateful_widget(items, chunks[0], &mut todo_list.items.state);
+            
+            let workspace_text = Spans::from(
+                Span::styled(
+                    format!("Workspace: {}", workspace_name), 
+                    Style::default().add_modifier(Modifier::ITALIC).add_modifier(Modifier::BOLD)
+                ),
+            );
+            let workspace_bar = Paragraph::new(workspace_text)
+                .block(
+                    Block::default()
+                        .style(
+                            Style::default()
+                                .bg(Color::LightGreen)
+                                .fg(Color::Black)
+                                .add_modifier(Modifier::BOLD)
+                        ),
+                );
 
-            f.render_stateful_widget(items, f.size(), &mut todo_list.items.state);
+            f.render_widget(workspace_bar, chunks[1]);
         })?;
 
         for k in asi.by_ref().keys() {

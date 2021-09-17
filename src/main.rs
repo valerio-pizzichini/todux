@@ -20,17 +20,19 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     sys::initialize();
 
-    let mut db_filename = match workspace::get_workspace() {
-        Ok(workspace_name) => database::get_db_filename_from_workspace_name(workspace_name),
-        _ => database::get_db_filename_from_workspace_name(String::from(""))
+    let mut workspace_name = match workspace::get_workspace() {
+        Ok(workspace_name) => workspace_name,
+        _ => String::from("Default")
     };
+    let mut db_filename = database::get_db_filename_from_workspace_name(workspace_name.clone());
 
     match StructOpt::from_args() {
         Cli::Workspace(ws_command) => {
             match ws_command {
-                WorkspaceCommand::Set { workspace_name} => {
-                    workspace::set_workspace(&workspace_name);
-                    db_filename = database::get_db_filename_from_workspace_name(workspace_name);
+                WorkspaceCommand::Set { name } => {
+                    workspace_name = name.clone();
+                    workspace::set_workspace(&name);
+                    db_filename = database::get_db_filename_from_workspace_name(name);
                 },
                 WorkspaceCommand::Unset => {
                     workspace::unset_workspace();
@@ -45,8 +47,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                         });
                     return Ok(());
                 },
-                WorkspaceCommand::Remove { workspace_name } => {
-                    workspace::remove_workspace(&workspace_name);
+                WorkspaceCommand::Remove { name } => {
+                    workspace::remove_workspace(&name);
                 }
             }
         },
@@ -61,5 +63,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut todo_list = TodoList::new(db);
     todo_list.items.state.select(Some(0));
 
-    return show_list(todo_list, db_filename);
+    return show_list(
+        todo_list, 
+        db_filename,
+        workspace_name.clone()
+    );
 }
