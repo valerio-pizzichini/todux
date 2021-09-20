@@ -5,6 +5,7 @@ pub mod todo;
 pub mod workspace;
 pub mod cli;
 pub mod sys;
+pub mod key_binding;
 mod ui {
     pub mod todolist;
     pub mod view_list;
