@@ -1,6 +1,7 @@
 use crate::todo;
 use crate::ui;
 use crate::database;
+use crate::key_binding;
 
 use termion::{event::Key, raw::IntoRawMode, input::TermRead};
 use tui::widgets::{Block, Borders, List, ListItem, Paragraph};
@@ -13,6 +14,7 @@ use std::error::Error;
 use tui::Terminal;
 use tui::backend::TermionBackend;
 use ui::todolist::TodoList;
+use key_binding::get_key_bindings;
 
 pub fn show_list(
     mut todo_list: TodoList,
@@ -36,11 +38,10 @@ pub fn show_list(
         terminal.draw(|f| {
             let chunks = Layout::default()
                 .direction(Direction::Vertical)
-                .margin(0)
                 .constraints(
                     [
-                        Constraint::Percentage(98),
-                        Constraint::Max(1)
+                        Constraint::Max(99),
+                        Constraint::Max(1),
                     ]
                     .as_ref(),
                 )
@@ -62,7 +63,7 @@ pub fn show_list(
                 })
                 .collect();
 
-            // Create a List from all list items and highlight the currently selected one
+            // Create a List from all list items and highlight the selected one
             let items = List::new(items)
                 .block(Block::default().borders(Borders::ALL).title("TODO"))
                 .highlight_style(
@@ -76,7 +77,7 @@ pub fn show_list(
             
             let workspace_text = Spans::from(
                 Span::styled(
-                    format!("Workspace: {}", workspace_name), 
+                    format!("Workspace: {}{}", workspace_name, get_key_bindings_string()), 
                     Style::default().add_modifier(Modifier::ITALIC).add_modifier(Modifier::BOLD)
                 ),
             );
@@ -85,7 +86,7 @@ pub fn show_list(
                     Block::default()
                         .style(
                             Style::default()
-                                .bg(Color::LightGreen)
+                                .bg(Color::White)
                                 .fg(Color::Black)
                                 .add_modifier(Modifier::BOLD)
                         ),
@@ -120,4 +121,17 @@ pub fn show_list(
             }
         }
     }
+}
+
+fn get_key_bindings_string() -> String {
+    let mut key_bindings_string = String::from("");
+
+    key_binding::get_key_bindings()
+        .into_iter()
+        .for_each(|f| {
+            let key_binding_string = format!("   [{}] {}", f.key, f.description);
+            key_bindings_string.push_str(&key_binding_string);
+        });
+
+    key_bindings_string
 }
