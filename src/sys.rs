@@ -1,11 +1,13 @@
+use crate::log;
+
 use std::env;
 use std::fs;
 
 pub fn initialize() {
     let home_project_dir = get_home_project_dir();
     match fs::create_dir(&home_project_dir) {
-        Ok(_) => println!("Home project dir created at: {}", home_project_dir),
-        Err(_) => println!("Home project dir already exists at: {}", home_project_dir)
+        Ok(_) => log::info(String::from("SYS"), format!("Home project dir created at: {}", home_project_dir)),
+        Err(_) => log::info(String::from("SYS"), format!("Home project dir already exists at: {}", home_project_dir)),
     }
 }
 
