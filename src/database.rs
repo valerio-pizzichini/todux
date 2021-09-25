@@ -1,6 +1,7 @@
 use crate::todo::TodoData;
 use std::fs::{self, File};
 use crate::sys;
+use crate::log;
 
 pub fn read(db_filename: &str) -> TodoData {
     match File::open(db_filename) {
@@ -29,7 +30,6 @@ pub fn save(todo: &TodoData, db_filename: &str) {
 pub fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
     let db_file_name = format!("db.{}.json", workspace_name);
     let db_filepath = sys::get_project_file_path(&db_file_name);
-    println!("db path: {}", db_filepath);
 
     db_filepath
 }

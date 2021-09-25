@@ -14,7 +14,6 @@ use std::error::Error;
 use tui::Terminal;
 use tui::backend::TermionBackend;
 use ui::todolist::TodoList;
-use key_binding::get_key_bindings;
 
 pub fn show_list(
     mut todo_list: TodoList,
