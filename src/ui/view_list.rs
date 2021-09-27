@@ -56,7 +56,7 @@ pub fn show_list(
                 .map(|i| {
                     let content = Span::from(String::from(i.title.as_str()));
                     let checkbox = match i.done {
-                        true => Span::from("[x] "),
+                        true => Span::from("[\u{2714}] "),
                         false => Span::from("[ ] ")
                     };
                     let spans = Spans::from(vec![checkbox, content]);
