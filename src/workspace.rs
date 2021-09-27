@@ -90,7 +90,7 @@ pub fn list_workspaces() -> io::Result<Vec<String>> {
 }
 
 pub fn remove_workspace(workspace_name: &str) {
-    fs::remove_file(database::get_db_filename_from_workspace_name(String::from(workspace_name)));
+    fs::remove_file(database::get_db_filename_from_workspace_name(workspace_name));
 }
 
 #[cfg(test)]

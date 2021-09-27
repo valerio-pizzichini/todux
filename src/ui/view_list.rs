@@ -19,8 +19,8 @@ use ui::todolist::TodoList;
 
 pub fn show_list(
     mut todo_list: TodoList,
-    db_filename: String,
-    workspace_name: String
+    db_filename: &str,
+    workspace_name: &str
 ) -> Result<(), Box<dyn Error>> {
 
     let stdout = io::stdout()
