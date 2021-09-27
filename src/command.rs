@@ -9,7 +9,7 @@ pub fn add(description: String, db_filename: &str) {
     });
     database::save(&db, db_filename);
 
-    println!("\"{}\" added successfully [v]", description);
+    println!("\"{}\" added \u{2714}", description);
 }
 
 pub fn list(db_filename: &str) {

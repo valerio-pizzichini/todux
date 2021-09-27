@@ -1,27 +1,39 @@
 # TODUX
+> Simple CLI todo manager
+![How_to_use](docs/todux_how_to_use.gif)
 
-#### Add new todo item
+## Commands list
+
+### Add item
 ````
-$ todux add "Write more tests"
+$ todux add "Schedule new meeting for tomorrow at 10.30"
+
+"Schedule new meeting for tomorrow at 10.30" added ✔
 
 ````
 
-#### Display todo list
+### Display list
 ````
 $ todux list
-
 ````
 
-#### Change workspace
+### Change workspace
 ````
 $ todux workspace set new_workspace
 
+Workspace set to "new_workspace" ✔
 ````
 
-#### Unset workspace
+### Unset workspace
 ````
 $ todux workspace unset
+````
 
+### Delete workspace
+````
+$ todux workspace remove new_workspace
+
+Workspace "new_workspace" removed 🗑
 ````
 
 

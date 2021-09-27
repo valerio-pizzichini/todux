@@ -34,23 +34,27 @@ fn main() -> Result<(), Box<dyn Error>> {
                 WorkspaceCommand::Set { name } => {
                     workspace_name = name.clone();
                     workspace::set_workspace(&name);
-                    db_filename = database::get_db_filename_from_workspace_name(name);
+                    db_filename = database::get_db_filename_from_workspace_name(name.clone());
+                    println!("Workspace set to \"{}\" \u{2714}", name);
+                    return Ok(());
                 },
                 WorkspaceCommand::Unset => {
                     workspace::unset_workspace();
-                    db_filename = String::from("db.json");
+                    database::get_db_filename_from_workspace_name(String::from("Default"));
                 },
                 WorkspaceCommand::List => {
                     let entries = workspace::list_workspaces().expect("Error listing workspaces");
                     entries
                         .into_iter()
                         .for_each(|e| {
-                            println!("{}", e);
+                            println!("\u{25FD} {}", e);
                         });
                     return Ok(());
                 },
                 WorkspaceCommand::Remove { name } => {
                     workspace::remove_workspace(&name);
+                    println!("Workspace \"{}\" removed \u{1F5D1}", name);
+                    return Ok(());
                 }
             }
         },
