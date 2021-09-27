@@ -27,9 +27,7 @@ pub fn save(todo: &TodoData, db_filename: &str) {
     fs::write(db_filename, db_content).expect("Error while saving database")
 }
 
-pub fn get_db_filename_from_workspace_name(workspace_name: String) -> String {
+pub fn get_db_filename_from_workspace_name(workspace_name: &str) -> String {
     let db_file_name = format!("db.{}.json", workspace_name);
-    let db_filepath = sys::get_project_file_path(&db_file_name);
-
-    db_filepath
+    return sys::get_project_file_path(&db_file_name);
 }
