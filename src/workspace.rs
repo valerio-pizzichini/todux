@@ -111,7 +111,7 @@ mod tests {
     fn get_workspace_return_expected_workspace() {
         
         // Arrange
-        fs::write(WORKSPACE_FILENAME, "foobar")
+        fs::write(sys::get_project_file_path(WORKSPACE_FILENAME), "foobar")
             .expect("Cannot write workspace name into workspace file for testing purpose");
 
         // Act
@@ -161,7 +161,7 @@ mod tests {
     }
 
     fn tear_down() {
-        fs::remove_file(WORKSPACE_FILENAME)
+        fs::remove_file(sys::get_project_file_path(WORKSPACE_FILENAME))
             .expect("Unable to remove workspace file created for testing purpose");
     }
 }
