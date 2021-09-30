@@ -16,6 +16,10 @@ $ todux add "Schedule new meeting for tomorrow at 10.30"
 ````
 $ todux list
 ````
+Interactive keybindings during list view:
+* [T] Toggle/Untoggle item
+* [D] Delete item
+* [Q] Quit app
 
 ### Change workspace
 ````
