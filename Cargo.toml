@@ -12,7 +12,7 @@ keywords = [
 ]
 license = "MIT"
 repository = "https://github.com/sf3ris/todux"
-readme = "README.md"
+readme = "README.MD"
 
 [[bin]]
 name = "todux"
