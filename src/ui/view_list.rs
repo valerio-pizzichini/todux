@@ -2,14 +2,12 @@ use crate::todo;
 use crate::ui;
 use crate::database;
 use crate::key_binding;
-use crate::log;
-use crate::command;
 
 use termion::{event::Key, raw::IntoRawMode, input::TermRead};
 use tui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use tui::style::{Color, Modifier, Style};
 use tui::layout::{Layout, Constraint, Direction};
-use tui::text::{Span, Spans, Text};
+use tui::text::{Span, Spans};
 use std::io::{self, Read};
 use todo::{TodoData};
 use std::error::Error;

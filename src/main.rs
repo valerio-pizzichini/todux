@@ -59,7 +59,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         Cli::Add {todo_name} => {
             command::add(todo_name, &db_filename);
             return Ok(());
-        }
+        },
+        Cli::Version => {
+            let version = env!("CARGO_PKG_VERSION");
+            println!("version: {}", version);
+            return Ok(());
+        },
         _ => println!("Continuing to list")
     }
 

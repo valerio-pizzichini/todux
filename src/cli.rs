@@ -6,7 +6,8 @@ pub enum Cli {
         todo_name: String
     },
     List, 
-    Workspace(WorkspaceCommand)
+    Workspace(WorkspaceCommand),
+    Version
 }
 
 #[derive(StructOpt, Debug)]
