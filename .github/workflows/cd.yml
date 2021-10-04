@@ -30,6 +30,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Login to crates.io
-      run: cargo login {{ secrets.CRATES_IO_API_KEY }}
+      run: cargo login ${{ secrets.CRATES_IO_API_KEY }}
     - name: Publish crate
       run: cargo publish
