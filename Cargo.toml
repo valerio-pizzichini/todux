@@ -1,9 +1,24 @@
 [package]
-name = "rust-todo-cli"
+name = "todux"
 version = "0.1.0"
-authors = ["sf3ris <vale.piz92@hotmail.it>"]
+authors = ["sf3ris <sf3ris@protonmail.com>"]
 edition = "2018"
+description = "todux is a simple yet fast todo manager via CLI"
+homepage = "https://github.com/sf3ris/todux"
+keywords = [
+    "todo",
+    "cli",
+    "tui"
+]
+license = "MIT"
+repository = "https://github.com/sf3ris/todux"
+readme = "README.MD"
 
+[[bin]]
+name = "todux"
+test = false
+bench = false
+path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

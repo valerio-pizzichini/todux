@@ -1,5 +1,12 @@
 # TODUX
 > Simple CLI todo manager
+
+ Quick links:
+* [How to use](#how-to-use)
+* [Commands list](#commands-list)
+* [Installation](#installation)
+
+## How to use
 ![How_to_use](docs/todux_how_to_use.gif)
 
 ## Commands list
@@ -40,4 +47,18 @@ $ todux workspace remove new_workspace
 Workspace "new_workspace" removed 🗑
 ````
 
+## Installation
 
+### From source
+
+With Rust's package manager [cargo](https://github.com/rust-lang/cargo), you can install *todux* via:
+```
+cargo install todux
+```
+Note that rust version *1.42.0* or later is required.
+
+`make` is also needed for the build.
+
+### From binaries
+
+The [release page](https://github.com/sf3ris/todux/releases) includes precompiled binaries for Linux.
