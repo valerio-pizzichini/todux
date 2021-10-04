@@ -3,6 +3,16 @@ name = "todux"
 version = "0.1.0"
 authors = ["sf3ris <sf3ris@protonmail.com>"]
 edition = "2018"
+description = "todux is a simple yet fast todo manager via CLI"
+homepage = "https://github.com/sf3ris/todux"
+keywords = [
+    "todo",
+    "cli",
+    "tui"
+]
+license = "MIT"
+repository = "https://github.com/sf3ris/todux"
+readme = "README.md"
 
 [[bin]]
 name = "todux"
