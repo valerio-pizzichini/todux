@@ -1,0 +1,26 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: cargo update --verbose
+    - name: Run tests
+      run: cargo test --verbose
+
+  build:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build application
+      run: cargo build --verbose

@@ -1,6 +1,6 @@
 [package]
 name = "todux"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["sf3ris <sf3ris@protonmail.com>"]
 edition = "2018"
 description = "todux is a simple yet fast todo manager via CLI"
@@ -16,8 +16,6 @@ readme = "README.MD"
 
 [[bin]]
 name = "todux"
-test = false
-bench = false
 path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
